@@ -60,6 +60,10 @@ export default function App() {
   // was sending for you all week, now triggered by a button.
   // ----------------------------------------------------------
   async function loadQuotes() {
+  let response = await fetch(`${API_URL}/api/quotes`)
+  let data = await response.json()
+  setQuotes(data)
+  //console.log(data);
 
   }
 
@@ -84,9 +88,19 @@ export default function App() {
   // You have to call setQuotes to make the list reflect the change.
   // ----------------------------------------------------------
   async function handleCreate(e) {
-    e.preventDefault()
+ e.preventDefault()
+ const response = await fetch(`${API_URL}/api/quotes`,{
+   method: "POST",
+   headers: { 'Content-Type': 'application/json' },
+   body:JSON.stringify({ text, author })
+ })
+  const data = await response.json()
+  setQuotes([...quotes, data])
+  setText("")
+  setAuthor("")
 
   }
+
 
 
   // ----------------------------------------------------------
@@ -102,6 +116,16 @@ export default function App() {
   //   3. Reset the input: setDeleteId('')
   // ----------------------------------------------------------
   async function handleDelete() {
+  
+    const response = await fetch(`${API_URL}/api/quotes/${deleteId}`,{
+      method:"DELETE"
+    })
+    const data = await quotes.filter( ({id})=>{
+      return id !=Number(deleteId)
+    })
+    
+    setQuotes([...data])
+    setDeleteId('')
 
   }
 
